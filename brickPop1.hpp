@@ -17,13 +17,6 @@ struct GameBoard{
     unsigned char grid[10][10];
     std::vector<Group>groups;
     std::vector<std::pair<int, int>>accounted;
-    //orders board.groups, after they've been created in a different order
-    //For command:
-    //r = reverse
-    //n = noAction
-    //s = small first
-    //l = large first
-    //i = isolated last
 
     void orderGroups(char command);
     int getIsolated(unsigned char c);

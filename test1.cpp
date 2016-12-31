@@ -74,7 +74,6 @@ int main(){
     string temp;
     GameBoard oBoard;
 
-    //reading from file
     ifstream infile(fileName);
     string line;
     while(getline(infile, line)){
@@ -98,9 +97,7 @@ int main(){
     yee.clear();
     indices = &yee;
     cout << "size " << indices->size() << std::endl;
-    //indices->clear();
     cout << "test" << std::endl;
-    //start making moves
     createGroups(oBoard, command);
     int score = 0;
     int bestScore = 0;
@@ -118,7 +115,6 @@ int main(){
     }
   
     
-    //print out solution
     if(optimize){
         cout << std::endl;
         for(int i=0; i<optimalScore->size(); i++){
