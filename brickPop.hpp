@@ -31,7 +31,7 @@ void addToGroup(GameBoard &board, Group &g, std::pair<int, int>p);
 bool isEmpty(GameBoard board);
 void removeGroup(GameBoard &board, Group group);
 void createGroups(GameBoard &board, char command);
-bool makeMove(GameBoard board, std::vector<int> *indices, int &times, char command);
+bool makeMove(GameBoard board, std::vector<int> *indices, int &times, char command, std::vector<int> *optimalScore, int &score, int &bestScore, bool optimize);
 void printGrid(GameBoard board, std::map<unsigned char, char>rColors);
 int elements(GameBoard board);
 void fakeRemove(GameBoard board, Group group, std::map<unsigned char, char>rColors);

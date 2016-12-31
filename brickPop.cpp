@@ -10,13 +10,14 @@ using std::find;
 using std::abs;
 
 void GameBoard::orderGroups(char command){
-    if(command == 'r'){
+/*    if(command == 'r'){
         for(int i=0; i<groups.size()/2; i++){
             Group temp = groups[i];
             groups[i] = groups[groups.size()-i-1];
             groups[groups.size()-i-1] = temp;
         }
     }
+*/
     if(command == 's'){
         for(int j=0; j<groups.size(); j++){
             
@@ -26,8 +27,10 @@ void GameBoard::orderGroups(char command){
             for(int i=j; i<groups.size(); i++){
                 if(groups[i].coords.size() < minSize){
                     minIndex = i;
+                    minSize = groups[i].coords.size();
                 }
             }
+            
             Group temp = groups[j];
             groups[j] = groups[minIndex];
             groups[minIndex] = temp;
@@ -196,12 +199,11 @@ void createGroups(GameBoard& board, char command){//fills board.groups with Grou
 
 }//createGroups
     
-bool makeMove(GameBoard board, vector<int> *indices, int &times, char command){   
+bool makeMove(GameBoard board, vector<int> *indices, int &times, char command, vector<int> *optimalScore, int &score, int &bestScore, bool optimize){   
     cout << std::endl << times << " times" << std::endl;
-    for(int i=0; i<indices->size(); i++){
-        cout << indices->at(i) << " ";
+    if(optimize && times > 600000){
+        return true;
     }
-    
     
     bool last;
     times++;
@@ -209,31 +211,53 @@ bool makeMove(GameBoard board, vector<int> *indices, int &times, char command){
     //check if win or loss, based on urrent board
     if(board.groups.size() == 0){
         if (isEmpty(board)){
-           cout << "final indices: ";
-           for(int i=0; i<indices->size(); i++){
-               cout << indices->at(i) << " ";
+            if(optimize){
+                if(score > bestScore){
+                    *optimalScore = *indices;
+                    int score1 = score;
+                    bestScore = score1;
+                }
+                
+                score = 0;
+                indices->pop_back();
+                return false;
+
+            }
+           else{
+               cout << "final indices: ";
+                for(int i=0; i<indices->size(); i++){
+                cout << indices->at(i) << " ";
+                }
+                cout << std::endl;
+                      
+                return true;
            }
-           cout << std::endl;
-           
-            return true;
         }
+
         else{
+            if(optimize){
+                score = 0;
+            }
             indices->pop_back();
             return false;
         }
     } 
  
     for(int i=0; i<board.groups.size(); i++){
-        cout << board.groups.size() << std::endl;
-        cout << "in for loop " << i << std::endl; 
         if(i==0){indices->push_back(0);}
         else{indices->push_back(i);}
+        int score1;
+        if(optimize){
+            int sizeOfGroup = board.groups[i].coords.size();
+            score1 = score + (sizeOfGroup * (sizeOfGroup - 1));
+
+        }
         bool last1 = (i == board.groups.size()-1);
         GameBoard nBoard = board;
         removeGroup(nBoard, nBoard.groups[i]);//alters board
         createGroups(nBoard, command);//also alters board
         
-        if(makeMove(nBoard, indices, times, command)){
+        if(makeMove(nBoard, indices, times, command, optimalScore, score1, bestScore, optimize)){
             return true;
         }
     }
